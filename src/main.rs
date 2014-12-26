@@ -32,16 +32,6 @@ impl Player {
     }
 }
 
-static VERTEX_DATA: [GLfloat, ..12] = [
-    -0.5, -0.4,
-    -0.6, -0.8,
-    -0.4, -0.8,
-
-    0.5, -0.4,
-    0.4, -0.8,
-    0.6, -0.8
-];
-
 static VS_SRC: &'static str =
     "#version 120
 
@@ -127,7 +117,7 @@ fn main() {
         gl::GenBuffers(1, &mut vbo);
         gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
         gl::BufferData(gl::ARRAY_BUFFER,
-                       (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                       (vertex_data.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
                        mem::transmute(&vertex_data[0]),
                        gl::DYNAMIC_DRAW);
 
@@ -164,7 +154,7 @@ fn main() {
             vertex_data.push_all(player_a.to_vertex_data().as_slice());
             vertex_data.push_all(player_b.to_vertex_data().as_slice());
             gl::BufferData(gl::ARRAY_BUFFER,
-                           (VERTEX_DATA.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                           (vertex_data.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
                            mem::transmute(&vertex_data[0]),
                            gl::DYNAMIC_DRAW);
 
