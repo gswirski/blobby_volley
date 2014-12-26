@@ -1,6 +1,6 @@
 extern crate gl;
 
-use glutin;
+use os;
 use gl::types::*;
 use std::mem;
 use std::ptr;
@@ -11,8 +11,8 @@ pub struct Context {
     pub vbo: u32,
 }
 
-pub fn load(window: &glutin::Window) -> Context {
-    gl::load(window);
+pub fn load(window: &os::Window) -> Context {
+    gl::load(&window.window);
 
     let (mut vao, mut vbo) = (0, 0);
 

@@ -1,4 +1,6 @@
 use gl::types::GLfloat;
+use std::collections::HashSet;
+use glutin::VirtualKeyCode;
 
 pub struct World {
     player: Player,
@@ -13,7 +15,10 @@ impl World {
         }
     }
 
-    pub fn move_player(&mut self, dir: int) {
+    pub fn move_player(&mut self, keys: &HashSet<VirtualKeyCode>) {
+        let mut dir = 0;
+        dir += keys.contains(&VirtualKeyCode::Right) as int;
+        dir -= keys.contains(&VirtualKeyCode::Left) as int;
         self.player.move_p(dir);
     }
 
