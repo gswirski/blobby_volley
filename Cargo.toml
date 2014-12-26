@@ -1,0 +1,15 @@
+[package]
+
+name = "blobby_volley"
+version = "0.0.1"
+authors = [ "Grzegorz Swirski <grzegorz@swirski.name>" ]
+
+[dependencies.glutin]
+git = "https://github.com/tomaka/glutin"
+
+[dependencies.gl]
+git = "https://github.com/bjz/gl-rs"
+
+[[bin]]
+
+name = "blobby"
