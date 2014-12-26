@@ -3,34 +3,14 @@
 extern crate glutin;
 extern crate gl;
 
-use gl::types::GLfloat;
 use glutin::{
     ElementState,
     Event,
     VirtualKeyCode
 };
 
+mod game;
 mod graphics;
-
-struct Player {
-    x: f32,
-    y: f32,
-}
-
-impl Player {
-    fn move_p(&mut self, dir: int) {
-        self.x += 0.01 * dir as f32;
-    }
-
-    fn to_vertex_data(&self) -> Vec<GLfloat> {
-        return vec![
-            self.x, self.y + 0.4,
-            self.x - 0.1, self.y,
-            self.x + 0.1, self.y,
-        ];
-    }
-}
-
 
 fn main() {
     let window = glutin::WindowBuilder::new()
@@ -42,13 +22,7 @@ fn main() {
     unsafe { window.make_current() };
 
     let context = graphics::load(&window);
-
-    let mut player_a = Player { x: -0.5, y: -0.8 };
-    let player_b = Player { x: 0.5, y: -0.8 };
-
-    let mut vertex_data: Vec<GLfloat> = vec![];
-    vertex_data.push_all(player_a.to_vertex_data().as_slice());
-    vertex_data.push_all(player_b.to_vertex_data().as_slice());
+    let mut world = game::World::new();
 
     let mut right = 0;
     let mut left = 0;
@@ -65,13 +39,9 @@ fn main() {
             }
         }
 
-        player_a.move_p(right - left);
+        world.move_player(right - left);
 
-        vertex_data.clear();
-        vertex_data.push_all(player_a.to_vertex_data().as_slice());
-        vertex_data.push_all(player_b.to_vertex_data().as_slice());
-
-        context.draw_frame(&vertex_data);
+        context.draw_frame(&world.to_vertex_data());
 
         window.swap_buffers();
     }
