@@ -12,10 +12,14 @@ use glutin::{
     VirtualKeyCode
 };
 
-static VERTEX_DATA: [GLfloat, ..6] = [
-    0.0, 0.5,
-    0.5, -0.5,
-    -0.5, -0.5
+static VERTEX_DATA: [GLfloat, ..12] = [
+    -0.5, -0.4,
+    -0.6, -0.8,
+    -0.4, -0.8,
+
+    0.5, -0.4,
+    0.4, -0.8,
+    0.6, -0.8
 ];
 
 static VS_SRC: &'static str =
@@ -123,7 +127,7 @@ fn main() {
             gl::ClearColor(0.3, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
 
-            gl::DrawArrays(gl::TRIANGLES, 0, 3);
+            gl::DrawArrays(gl::TRIANGLES, 0, 6);
         }
 
         window.swap_buffers();
