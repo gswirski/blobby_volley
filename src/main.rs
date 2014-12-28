@@ -13,7 +13,7 @@ fn main() {
     let context = graphics::load(&window);
     let mut world = game::World::new();
 
-    'main: while !window.should_close {
+    while !window.should_close {
         window.handle_events();
         world.move_player(&window.key_set);
         context.draw_frame(renderer::render(&world));

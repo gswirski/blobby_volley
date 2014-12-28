@@ -29,7 +29,6 @@ impl Window {
         for event in self.window.poll_events() {
             self.handle_event(event);
         }
-
     }
 
     fn handle_event(&mut self, event: Event) {

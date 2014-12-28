@@ -39,4 +39,3 @@ impl Player {
         self.x += 0.01 * dir as f32;
     }
 }
-
