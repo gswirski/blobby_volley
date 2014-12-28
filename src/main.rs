@@ -5,6 +5,7 @@ extern crate glutin;
 
 mod os;
 mod game;
+mod renderer;
 mod graphics;
 
 fn main() {
@@ -15,7 +16,7 @@ fn main() {
     'main: while !window.should_close {
         window.handle_events();
         world.move_player(&window.key_set);
-        context.draw_frame(&world.to_vertex_data());
+        context.draw_frame(renderer::render(&world));
         window.window.swap_buffers();
     }
 }

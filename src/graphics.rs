@@ -5,7 +5,6 @@ use gl::types::*;
 use std::mem;
 use std::ptr;
 use std::str;
-use std::num::FloatMath;
 
 pub struct Context {
     pub vao: u32,
@@ -38,45 +37,18 @@ pub fn load(window: &os::Window) -> Context {
     Context { vao: vao, vbo: vbo }
 }
 
-fn ball_vec() -> Vec<GLfloat> {
-    let mut vertex: Vec<GLfloat> = vec![];
-    let triangle_amount = 400i;
-    let twice_pi: f32 = 2.0 * 3.14;
-    let radius: f32 = 0.1;
-    let x: f32 = -0.4;
-    let y: f32 = -0.4;
-    let startx: f32 = x + (radius * ( twice_pi / triangle_amount as f32).cos());
-    let starty: f32 = y + (radius * ( twice_pi / triangle_amount as f32).sin());
-    for i in range(1, triangle_amount + 1) {
-        vertex.push(x);
-        vertex.push(y);
-        vertex.push( x + (radius * (i as f32 * twice_pi / triangle_amount as f32).cos()));
-        vertex.push( y + (radius * (i as f32 * twice_pi / triangle_amount as f32).sin()));
-        vertex.push( x + (radius * ((i + 1) as f32 * twice_pi / triangle_amount as f32).cos()));
-        vertex.push( y + (radius * ((i + 1) as f32 * twice_pi / triangle_amount as f32 ).sin()));
-    }
-    vertex.pop();
-    vertex.pop();
-    vertex.push(startx);
-    vertex.push(starty);
-    return vertex;
-}
-
 impl Context {
-    pub fn draw_frame(&self, data: & Vec<GLfloat>) {
+    pub fn draw_frame(&self, data: Vec<GLfloat>) {
         unsafe {
-            let mut vertex: Vec<GLfloat> = vec![];
-            vertex.push_all(data.as_slice());
-            vertex.push_all(ball_vec().as_slice());
             gl::BufferData(gl::ARRAY_BUFFER,
-                           (vertex.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-                           mem::transmute(&vertex[0]),
+                           (data.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                           mem::transmute(&data[0]),
                            gl::DYNAMIC_DRAW);
 
             gl::ClearColor(0.3, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
 
-            gl::DrawArrays(gl::TRIANGLES, 0, vertex.len() as i32);
+            gl::DrawArrays(gl::TRIANGLES, 0, data.len() as i32);
 
         }
     }
