@@ -15,7 +15,9 @@ fn main() {
 
     while !window.should_close {
         window.handle_events();
-        world.move_player(&window.key_set);
+
+        world.tick(&window.key_set);
+
         context.draw_frame(renderer::render(&world));
         window.window.swap_buffers();
     }
