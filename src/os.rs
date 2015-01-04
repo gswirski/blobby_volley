@@ -9,6 +9,7 @@ use glutin::{
 pub struct Window {
     pub window: glutin::Window,
     pub should_close: bool,
+    pub paused: bool,
     pub key_set: HashSet<VirtualKeyCode>,
 }
 
@@ -22,7 +23,12 @@ impl Window {
 
         unsafe { window.make_current() };
 
-        Window { window: window, should_close: false, key_set: HashSet::new() }
+        Window {
+            window: window,
+            should_close: false,
+            paused: false,
+            key_set: HashSet::new()
+        }
     }
 
     pub fn get_canvas_proportions(&self) -> f32 {
@@ -42,6 +48,8 @@ impl Window {
         match event {
             Event::KeyboardInput(_, _, Some(VirtualKeyCode::Escape)) =>
                 self.close_window(),
+            Event::KeyboardInput(ElementState::Released, _, Some(VirtualKeyCode::P)) =>
+                self.pause(),
             Event::KeyboardInput(ElementState::Pressed, _, Some(key)) =>
                 self.key_set.insert(key),
             Event::KeyboardInput(ElementState::Released, _, Some(key)) =>
@@ -53,6 +61,11 @@ impl Window {
 
     fn close_window(&mut self) -> bool {
         self.should_close = true;
+        true
+    }
+
+    fn pause(&mut self) -> bool {
+        self.paused = !self.paused;
         true
     }
 }

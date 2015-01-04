@@ -16,7 +16,9 @@ fn main() {
     while !window.should_close {
         window.handle_events();
 
-        world.tick(&window.key_set);
+        if !window.paused {
+            world.tick(&window.key_set);
+        }
 
         context.draw_frame(renderer::render(&window, &world));
         window.window.swap_buffers();
