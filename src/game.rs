@@ -14,7 +14,7 @@ impl World {
         World {
             player: Player::new(-0.5, -0.8),
             opponent: Player::new(0.5, -0.8),
-            ball: Ball { x: -0.5, y: 0.0 },
+            ball: Ball::new(-0.5, -0.3),
         }
     }
 
@@ -27,12 +27,31 @@ impl World {
 
         self.player.calc_velocity(0.02 * horiz as f32, jmp);
         self.player.apply_physics();
+
+        self.ball.apply_physics();
     }
 }
 
 pub struct Ball {
     pub x: f32,
     pub y: f32,
+    pub forces: Vec<[f32, ..2]>,
+    pub velocity: [f32, ..2],
+}
+
+impl Ball {
+    pub fn new(x: f32, y: f32) -> Ball {
+        Ball {
+            x: x,
+            y: y,
+            forces: vec![[0.0, -0.0025]],
+            velocity: [0.0, 0.0],
+        }
+    }
+
+    pub fn apply_physics(&mut self) {
+
+    }
 }
 
 pub struct Player {
@@ -61,14 +80,14 @@ impl Player {
         }
 
         if self.is_on_ground() && jmp {
-            self.velocity[1] = 0.05;
+            self.velocity[1] = 0.06;
         }
     }
 
     pub fn apply_physics(&mut self) {
         self.x += self.velocity[0];
-        self.x = self.x.max(-0.9);
-        self.x = self.x.min(-0.11);
+        self.x = self.x.max(-0.87);
+        self.x = self.x.min(-0.14);
 
         self.y += self.velocity[1];
         self.y = self.y.max(-0.8);
