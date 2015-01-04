@@ -18,7 +18,7 @@ fn main() {
 
         world.tick(&window.key_set);
 
-        context.draw_frame(renderer::render(&world));
+        context.draw_frame(renderer::render(&window, &world));
         window.window.swap_buffers();
     }
 }

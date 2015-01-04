@@ -1,15 +1,25 @@
+use os;
 use game;
 use std::num::FloatMath;
 use gl::types::GLfloat;
 
-pub fn render(world: &game::World) -> Vec<GLfloat> {
+pub fn render(window: &os::Window, world: &game::World) -> Vec<GLfloat> {
     let mut vertices: Vec<GLfloat> = vec![];
     vertices.push_all(render_player(&world.player).as_slice());
     vertices.push_all(render_player(&world.opponent).as_slice());
     vertices.push_all(render_ball(&world.ball).as_slice());
     vertices.push_all(render_net().as_slice());
 
-    vertices
+    let proportions = window.get_canvas_proportions();
+    let mut parity = false;
+    vertices.map_in_place(|v| {
+        parity = !parity;
+        if parity {
+            v
+        } else {
+            (v * proportions) + proportions - 1.0
+        }
+    })
 }
 
 fn render_net() -> Vec<GLfloat> {

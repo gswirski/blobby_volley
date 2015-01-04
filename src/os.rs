@@ -25,6 +25,13 @@ impl Window {
         Window { window: window, should_close: false, key_set: HashSet::new() }
     }
 
+    pub fn get_canvas_proportions(&self) -> f32 {
+        match self.window.get_inner_size() {
+            Some((w, h)) => (w as f32 / h as f32),
+            None => 1.0
+        }
+    }
+
     pub fn handle_events(&mut self) {
         for event in self.window.poll_events() {
             self.handle_event(event);
