@@ -50,7 +50,22 @@ impl Ball {
     }
 
     pub fn apply_physics(&mut self) {
+        if self.is_colliding() {
+            self.velocity[1] *= -0.9;
+            self.y = -0.83;
+        } else {
+            for force in self.forces.iter() {
+                self.velocity[0] += force[0];
+                self.velocity[1] += force[1];
+            }
 
+            self.x += self.velocity[0];
+            self.y += self.velocity[1];
+        }
+    }
+
+    fn is_colliding(&self) -> bool {
+        self.y < -0.83
     }
 }
 
