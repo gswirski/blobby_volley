@@ -67,6 +67,9 @@ impl Player {
 
     pub fn apply_physics(&mut self) {
         self.x += self.velocity[0];
+        self.x = self.x.max(-0.9);
+        self.x = self.x.min(-0.11);
+
         self.y += self.velocity[1];
         self.y = self.y.max(-0.8);
     }
