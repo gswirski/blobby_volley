@@ -1,5 +1,4 @@
 use std::num::Float;
-use std::num::FloatMath;
 use std::collections::HashSet;
 use glutin::VirtualKeyCode;
 
@@ -20,8 +19,8 @@ impl World {
 
     pub fn tick(&mut self, keys: &HashSet<VirtualKeyCode>) {
         let mut horiz = 0;
-        horiz += keys.contains(&VirtualKeyCode::Right) as int;
-        horiz -= keys.contains(&VirtualKeyCode::Left) as int;
+        horiz += keys.contains(&VirtualKeyCode::Right) as isize;
+        horiz -= keys.contains(&VirtualKeyCode::Left) as isize;
 
         let jmp = keys.contains(&VirtualKeyCode::Up);
 
@@ -35,8 +34,8 @@ impl World {
 pub struct Ball {
     pub x: f32,
     pub y: f32,
-    pub forces: Vec<[f32, ..2]>,
-    pub velocity: [f32, ..2],
+    pub forces: Vec<[f32; 2]>,
+    pub velocity: [f32; 2],
 }
 
 impl Ball {
@@ -72,8 +71,8 @@ impl Ball {
 pub struct Player {
     pub x: f32,
     pub y: f32,
-    pub forces: Vec<[f32, ..2]>,
-    pub velocity: [f32, ..2],
+    pub forces: Vec<[f32; 2]>,
+    pub velocity: [f32; 2],
 }
 
 impl Player {

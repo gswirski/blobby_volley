@@ -14,7 +14,7 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn new(title: &str, width: uint, height: uint) -> Window {
+    pub fn new(title: &str, width: usize, height: usize) -> Window {
         let window = glutin::WindowBuilder::new()
             .with_title(title.to_string())
             .with_dimensions(width, height)

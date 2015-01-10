@@ -1,10 +1,10 @@
-extern crate gl;
-
 use os;
+use gl;
 use gl::types::*;
 use std::mem;
 use std::ptr;
 use std::str;
+use std::ffi::CString;
 
 pub struct Context {
     pub vao: u32,
@@ -29,7 +29,7 @@ pub fn load(window: &os::Window) -> Context {
 
         gl::UseProgram(shader_program);
 
-        let pos_attr = "position".with_c_str(|ptr| gl::GetAttribLocation(shader_program, ptr));
+        let pos_attr = gl::GetAttribLocation(shader_program, CString::from_slice("position".as_bytes()).as_ptr());
         gl::VertexAttribPointer(pos_attr as GLuint, 2, gl::FLOAT, gl::FALSE, 0, ptr::null());
         gl::EnableVertexAttribArray(pos_attr as GLuint);
     }
@@ -74,7 +74,7 @@ fn compile_shader(src: &str, ty: GLuint) -> GLuint {
     let shader;
     unsafe {
         shader = gl::CreateShader(ty);
-        src.with_c_str(|ptr| gl::ShaderSource(shader, 1, &ptr, ptr::null()));
+        gl::ShaderSource(shader, 1, &CString::from_slice(src.as_bytes()).as_ptr(), ptr::null());
         gl::CompileShader(shader);
 
         let mut status = gl::FALSE as GLint;
@@ -83,7 +83,7 @@ fn compile_shader(src: &str, ty: GLuint) -> GLuint {
         if status != (gl::TRUE as GLint) {
             let mut len = 0;
             gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buf = Vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
+            let mut buf: Vec<u8> = (0..len as usize - 1).map(|_| 0u8).collect();
             gl::GetShaderInfoLog(shader, len, ptr::null_mut(), buf.as_mut_ptr() as *mut GLchar);
             panic!("{}", str::from_utf8(buf.as_slice()).ok().expect("ShaderInfoLog not valid utf8"));
         }
@@ -104,7 +104,7 @@ fn link_program(vs: GLuint, fs: GLuint) -> GLuint { unsafe {
     if status != (gl::TRUE as GLint) {
         let mut len: GLint = 0;
         gl::GetProgramiv(program, gl::INFO_LOG_LENGTH, &mut len);
-        let mut buf = Vec::from_elem(len as uint - 1, 0u8);     // subtract 1 to skip the trailing null character
+        let mut buf: Vec<u8> = (0..len as usize - 1).map(|_| 0u8).collect();
         gl::GetProgramInfoLog(program, len, ptr::null_mut(), buf.as_mut_ptr() as *mut GLchar);
         panic!("{}", str::from_utf8(buf.as_slice()).ok().expect("ProgramInfoLog not valid utf8"));
     }

@@ -1,7 +1,7 @@
 use os;
 use game;
-use std::num::FloatMath;
 use gl::types::GLfloat;
+use std::num::Float;
 
 pub fn render(window: &os::Window, world: &game::World) -> Vec<GLfloat> {
     let mut vertices: Vec<GLfloat> = vec![];
@@ -47,7 +47,7 @@ fn render_ball(ball: &game::Ball) -> Vec<GLfloat> {
 
 fn render_circle(x: f32, y: f32, r: f32) -> Vec<GLfloat> {
     let mut vertex: Vec<GLfloat> = vec![];
-    let precision = 400i;
+    let precision = 400is;
     let tau: f32 = 2.0 * 3.14;
     let startx: f32 = x + (r * (tau / precision as f32).cos());
     let starty: f32 = y + (r * (tau / precision as f32).sin());
