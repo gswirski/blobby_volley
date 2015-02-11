@@ -14,7 +14,7 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn new(title: &str, width: usize, height: usize) -> Window {
+    pub fn new(title: &str, width: u32, height: u32) -> Window {
         let window = glutin::WindowBuilder::new()
             .with_title(title.to_string())
             .with_dimensions(width, height)
@@ -39,7 +39,8 @@ impl Window {
     }
 
     pub fn handle_events(&mut self) {
-        for event in self.window.poll_events() {
+        let events: Vec<Event> = self.window.poll_events().collect();
+        for event in events {
             self.handle_event(event);
         }
     }
