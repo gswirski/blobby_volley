@@ -2,6 +2,8 @@ use std::num::Float;
 use std::collections::HashSet;
 use glutin::VirtualKeyCode;
 
+static GRAVITY: f32 = 0.0025;
+
 pub struct World {
     pub player: Player,
     pub opponent: Player,
@@ -43,23 +45,53 @@ impl Ball {
         Ball {
             x: x,
             y: y,
-            forces: vec![[0.0, -0.0025]],
+            forces: vec![[0.0, -GRAVITY]],
             velocity: [0.0, 0.0],
         }
     }
 
-    pub fn apply_physics(&mut self) {
-        if self.is_colliding() {
-            self.velocity[1] *= -0.9;
-            self.y = -0.83;
-        } else {
-            for force in self.forces.iter() {
-                self.velocity[0] += force[0];
-                self.velocity[1] += force[1];
-            }
+    fn kin_energy(&self) -> f32 {
+        let vx = self.velocity[0];
+        let vy = self.velocity[1];
+        (vx * vx + vy * vy) * 0.5
+    }
 
-            self.x += self.velocity[0];
-            self.y += self.velocity[1];
+    fn pot_energy(&self) -> f32 {
+        self.y * GRAVITY
+    }
+
+    pub fn energy(&self) -> f32 {
+        self.kin_energy() + self.pot_energy()
+    }
+
+    fn scale_velocity(&mut self, energy: f32) {
+        let kin = energy - self.pot_energy();
+        let ratio = (kin / self.kin_energy()).sqrt();
+
+        self.velocity[0] *= ratio;
+        self.velocity[1] *= ratio;
+    }
+
+    pub fn apply_physics(&mut self) {
+        for force in self.forces.iter() {
+            self.velocity[0] += force[0] / 2.0;
+            self.velocity[1] += force[1] / 2.0;
+        }
+
+        self.x += self.velocity[0];
+        self.y += self.velocity[1];
+
+        for force in self.forces.iter() {
+            self.velocity[0] += force[0] / 2.0;
+            self.velocity[1] += force[1] / 2.0;
+        }
+
+        if self.is_colliding() {
+            let energy = self.energy();
+            //panic!("exit");
+            self.velocity[1] *= -1.0;
+            self.y = -1.66 - self.y;
+            self.scale_velocity(energy);
         }
     }
 
