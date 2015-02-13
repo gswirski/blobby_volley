@@ -2,6 +2,7 @@ extern crate gl;
 extern crate glutin;
 
 mod os;
+mod geom;
 mod game;
 mod renderer;
 mod graphics;
