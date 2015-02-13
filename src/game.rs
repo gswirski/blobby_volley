@@ -1,4 +1,5 @@
 use geom;
+use std::cmp::Ordering::Equal;
 use std::num::Float;
 use std::collections::HashSet;
 use glutin::VirtualKeyCode;
@@ -45,7 +46,7 @@ impl Ball {
             circle: geom::Circle {
                 center: geom::Point { x: x, y: y },
                 radius: 0.1,
-                velocity: geom::Vec2 { x: 0.0, y: 0.0 }
+                velocity: geom::Vec2 { x: 0.05, y: 0.04 }
             },
             forces: vec![[0.0, -GRAVITY]],
         }
@@ -74,6 +75,42 @@ impl Ball {
     }
 
     pub fn apply_physics(&mut self) {
+        for force in self.forces.iter() {
+            self.circle.velocity.x += force[0] / 2.0;
+            self.circle.velocity.y += force[1] / 2.0;
+        }
+
+        self.circle.center.x += self.circle.velocity.x;
+        self.circle.center.y += self.circle.velocity.y;
+
+        for force in self.forces.iter() {
+            self.circle.velocity.x += force[0] / 2.0;
+            self.circle.velocity.y += force[1] / 2.0;
+        }
+
+        let mut particles = vec![
+            geom::Line::new(-1.0, -0.93, 1.0, -0.93),
+            geom::Line::new(-1.0, -1.0, -1.0, 10000.0),
+            geom::Line::new(1.0, -1.0, 1.0, 10000.0),
+            geom::Line::new(-0.01, -1.0, -0.01, -0.25),
+            geom::Line::new(0.01, -1.0, 0.01, -0.25),
+            geom::Line::new(-0.01, -0.25, 0.01, -0.25),
+        ];
+
+        particles.sort_by(|a, b|
+                          self.circle.distance(&a).partial_cmp(
+                              &self.circle.distance(&b)).unwrap_or(Equal)
+                          );
+
+        for particle in particles {
+            if self.circle.is_intersecting(&particle) {
+                self.circle.bounce_circle(&particle);
+                break;
+            }
+        }
+    }
+
+    pub fn _apply_physics(&mut self) {
         for force in self.forces.iter() {
             self.circle.velocity.x += force[0] / 2.0;
             self.circle.velocity.y += force[1] / 2.0;

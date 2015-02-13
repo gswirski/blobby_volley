@@ -39,6 +39,13 @@ impl Vec2 {
 }
 
 impl Line {
+    pub fn new(x1: f32, y1: f32, x2: f32, y2: f32) -> Line {
+        Line {
+            start: Point { x: x1, y: y1 },
+            end: Point { x: x2, y: y2 },
+        }
+    }
+
     pub fn to_unit_vector(&self) -> Vec2 {
         Vec2::between(&self.start, &self.end).to_unit()
     }
@@ -76,6 +83,16 @@ pub fn closest_point(circle: &Circle, line: &Line) -> Point {
 }
 
 impl Circle {
+    pub fn distance(&self, line: &Line) -> f32 {
+        let closest = closest_point(self, line);
+
+        distance(&self.center, &closest)
+    }
+
+    pub fn is_intersecting(&self, line: &Line) -> bool {
+        self.distance(line) < self.radius
+    }
+
     fn bounce_vector(&self, line: &Line) -> Vec2 {
         // @todo: make it long enough to cover radius as well
         Vec2::between(&closest_point(self, line), &self.center)
