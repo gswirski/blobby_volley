@@ -42,7 +42,7 @@ fn render_player(player: &game::Player) -> Vec<GLfloat> {
 }
 
 fn render_ball(ball: &game::Ball) -> Vec<GLfloat> {
-    render_circle(ball.x, ball.y, 0.1)
+    render_circle(ball.circle.center.x, ball.circle.center.y, ball.circle.radius)
 }
 
 fn render_circle(x: f32, y: f32, r: f32) -> Vec<GLfloat> {

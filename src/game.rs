@@ -1,3 +1,4 @@
+use geom;
 use std::num::Float;
 use std::collections::HashSet;
 use glutin::VirtualKeyCode;
@@ -34,30 +35,30 @@ impl World {
 }
 
 pub struct Ball {
-    pub x: f32,
-    pub y: f32,
+    pub circle: geom::Circle,
     pub forces: Vec<[f32; 2]>,
-    pub velocity: [f32; 2],
 }
 
 impl Ball {
     pub fn new(x: f32, y: f32) -> Ball {
         Ball {
-            x: x,
-            y: y,
+            circle: geom::Circle {
+                center: geom::Point { x: x, y: y },
+                radius: 0.1,
+                velocity: geom::Vec2 { x: 0.0, y: 0.0 }
+            },
             forces: vec![[0.0, -GRAVITY]],
-            velocity: [0.0, 0.0],
         }
     }
 
     fn kin_energy(&self) -> f32 {
-        let vx = self.velocity[0];
-        let vy = self.velocity[1];
+        let vx = self.circle.velocity.x;
+        let vy = self.circle.velocity.y;
         (vx * vx + vy * vy) * 0.5
     }
 
     fn pot_energy(&self) -> f32 {
-        self.y * GRAVITY
+        self.circle.center.y * GRAVITY
     }
 
     pub fn energy(&self) -> f32 {
@@ -68,35 +69,35 @@ impl Ball {
         let kin = energy - self.pot_energy();
         let ratio = (kin / self.kin_energy()).sqrt();
 
-        self.velocity[0] *= ratio;
-        self.velocity[1] *= ratio;
+        self.circle.velocity.x *= ratio;
+        self.circle.velocity.y *= ratio;
     }
 
     pub fn apply_physics(&mut self) {
         for force in self.forces.iter() {
-            self.velocity[0] += force[0] / 2.0;
-            self.velocity[1] += force[1] / 2.0;
+            self.circle.velocity.x += force[0] / 2.0;
+            self.circle.velocity.y += force[1] / 2.0;
         }
 
-        self.x += self.velocity[0];
-        self.y += self.velocity[1];
+        self.circle.center.x += self.circle.velocity.x;
+        self.circle.center.y += self.circle.velocity.y;
 
         for force in self.forces.iter() {
-            self.velocity[0] += force[0] / 2.0;
-            self.velocity[1] += force[1] / 2.0;
+            self.circle.velocity.x += force[0] / 2.0;
+            self.circle.velocity.y += force[1] / 2.0;
         }
 
         if self.is_colliding() {
             let energy = self.energy();
             //panic!("exit");
-            self.velocity[1] *= -1.0;
-            self.y = -1.66 - self.y;
+            self.circle.velocity.y *= -1.0;
+            self.circle.center.y = -1.66 - self.circle.center.y;
             self.scale_velocity(energy);
         }
     }
 
     fn is_colliding(&self) -> bool {
-        self.y < -0.83
+        self.circle.center.y < -0.83
     }
 }
 
