@@ -1,10 +1,8 @@
 use geom;
-use std::cmp::Ordering::Equal;
-use std::num::Float;
+use physics;
 use std::collections::HashSet;
+use std::num::Float;
 use glutin::VirtualKeyCode;
-
-static GRAVITY: f32 = 0.0025;
 
 pub struct World {
     pub player: Player,
@@ -31,14 +29,12 @@ impl World {
         self.player.calc_velocity(0.02 * horiz as f32, jmp);
         self.player.apply_physics();
 
-        self.ball.apply_physics();
-        //println!("E = {}", self.ball.energy());
+        physics::apply(&mut self.ball.circle);
     }
 }
 
 pub struct Ball {
     pub circle: geom::Circle,
-    pub forces: Vec<[f32; 2]>,
 }
 
 impl Ball {
@@ -49,67 +45,6 @@ impl Ball {
                 radius: 0.1,
                 velocity: geom::Vec2 { x: 0.05, y: 0.04 }
             },
-            forces: vec![[0.0, -GRAVITY]],
-        }
-    }
-
-    fn kin_energy(&self) -> f32 {
-        let vx = self.circle.velocity.x;
-        let vy = self.circle.velocity.y;
-        (vx * vx + vy * vy) * 0.5
-    }
-
-    fn pot_energy(&self) -> f32 {
-        self.circle.center.y * GRAVITY
-    }
-
-    pub fn energy(&self) -> f32 {
-        self.kin_energy() + self.pot_energy()
-    }
-
-    fn scale_velocity(&mut self, energy: f32) {
-        let kin = energy - self.pot_energy();
-        let ratio = (kin / self.kin_energy()).sqrt();
-
-        self.circle.velocity.x *= ratio;
-        self.circle.velocity.y *= ratio;
-    }
-
-    pub fn apply_physics(&mut self) {
-        for force in self.forces.iter() {
-            self.circle.velocity.x += force[0] / 2.0;
-            self.circle.velocity.y += force[1] / 2.0;
-        }
-
-        self.circle.center.x += self.circle.velocity.x;
-        self.circle.center.y += self.circle.velocity.y;
-
-        for force in self.forces.iter() {
-            self.circle.velocity.x += force[0] / 2.0;
-            self.circle.velocity.y += force[1] / 2.0;
-        }
-
-        let mut particles = vec![
-            geom::Line::new(-1.0, -0.93, 1.0, -0.93),
-            geom::Line::new(-1.0, -1.0, -1.0, 10000.0),
-            geom::Line::new(1.0, -1.0, 1.0, 10000.0),
-            geom::Line::new(-0.01, -1.0, -0.01, -0.25),
-            geom::Line::new(0.01, -1.0, 0.01, -0.25),
-            geom::Line::new(-0.01, -0.25, 0.01, -0.25),
-        ];
-
-        particles.sort_by(|a, b|
-                          self.circle.distance(&a).partial_cmp(
-                              &self.circle.distance(&b)).unwrap_or(Equal)
-                          );
-
-        for particle in particles {
-            if self.circle.is_intersecting(&particle) {
-                let energy = self.energy();
-                self.circle.bounce_circle(&particle);
-                self.scale_velocity(energy);
-                break;
-            }
         }
     }
 }

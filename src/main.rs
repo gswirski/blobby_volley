@@ -5,6 +5,7 @@ extern crate glutin;
 
 mod os;
 mod geom;
+mod physics;
 mod game;
 mod renderer;
 mod graphics;
