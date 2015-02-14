@@ -36,6 +36,10 @@ impl Vec2 {
         let len = self.magnitude();
         Vec2 { x: self.x / len, y: self.y / len }
     }
+
+    pub fn scale(&self, scale: f32) -> Vec2 {
+        Vec2 { x: self.x * scale, y: self.y * scale }
+    }
 }
 
 impl Line {
@@ -102,6 +106,18 @@ impl Circle {
         let bounce = self.bounce_vector(line);
         let bounce_normal = bounce.to_unit();
         let dot = dot_product(&self.velocity, &bounce_normal);
+
+        let mut len = bounce.magnitude();
+        if dot >= 0.0 {
+            len += self.radius;
+        } else {
+            len -= self.radius;
+        }
+
+        let displacement = bounce_normal.scale(len);
+        self.center.x -= displacement.x;
+        self.center.y -= displacement.y;
+
         self.velocity.x -= 2.0 * dot * bounce_normal.x;
         self.velocity.y -= 2.0 * dot * bounce_normal.y;
     }

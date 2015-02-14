@@ -32,6 +32,7 @@ impl World {
         self.player.apply_physics();
 
         self.ball.apply_physics();
+        //println!("E = {}", self.ball.energy());
     }
 }
 
@@ -104,7 +105,9 @@ impl Ball {
 
         for particle in particles {
             if self.circle.is_intersecting(&particle) {
+                let energy = self.energy();
                 self.circle.bounce_circle(&particle);
+                self.scale_velocity(energy);
                 break;
             }
         }
