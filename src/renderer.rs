@@ -5,10 +5,10 @@ use std::num::Float;
 
 pub fn render(window: &os::Window, world: &game::World) -> Vec<GLfloat> {
     let mut vertices: Vec<GLfloat> = vec![];
-    vertices.push_all(render_player(&world.player).as_slice());
-    vertices.push_all(render_player(&world.opponent).as_slice());
-    vertices.push_all(render_ball(&world.ball).as_slice());
-    vertices.push_all(render_net().as_slice());
+    vertices.push_all(&render_player(&world.player)[..]);
+    vertices.push_all(&render_player(&world.opponent)[..]);
+    vertices.push_all(&render_ball(&world.ball)[..]);
+    vertices.push_all(&render_net()[..]);
 
     let proportions = window.get_canvas_proportions();
     let mut parity = false;
@@ -35,8 +35,8 @@ fn render_net() -> Vec<GLfloat> {
 
 fn render_player(player: &game::Player) -> Vec<GLfloat> {
     let mut vertices: Vec<GLfloat> = vec![];
-    vertices.push_all(render_circle(player.x, player.y, 0.13).as_slice());
-    vertices.push_all(render_circle(player.x, player.y + 0.13, 0.1).as_slice());
+    vertices.push_all(&render_circle(player.x, player.y, 0.13)[..]);
+    vertices.push_all(&render_circle(player.x, player.y + 0.13, 0.1)[..]);
 
     vertices
 }
@@ -51,7 +51,7 @@ fn render_circle(x: f32, y: f32, r: f32) -> Vec<GLfloat> {
     let tau: f32 = 2.0 * 3.14;
     let startx: f32 = x + (r * (tau / precision as f32).cos());
     let starty: f32 = y + (r * (tau / precision as f32).sin());
-    for i in range(1, precision + 1) {
+    for i in 1..(precision + 1) {
         vertex.push(x);
         vertex.push(y);
         vertex.push(x + (r * (i as f32 * tau / precision as f32).cos()));

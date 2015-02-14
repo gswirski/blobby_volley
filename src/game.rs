@@ -112,33 +112,6 @@ impl Ball {
             }
         }
     }
-
-    pub fn _apply_physics(&mut self) {
-        for force in self.forces.iter() {
-            self.circle.velocity.x += force[0] / 2.0;
-            self.circle.velocity.y += force[1] / 2.0;
-        }
-
-        self.circle.center.x += self.circle.velocity.x;
-        self.circle.center.y += self.circle.velocity.y;
-
-        for force in self.forces.iter() {
-            self.circle.velocity.x += force[0] / 2.0;
-            self.circle.velocity.y += force[1] / 2.0;
-        }
-
-        if self.is_colliding() {
-            let energy = self.energy();
-            //panic!("exit");
-            self.circle.velocity.y *= -1.0;
-            self.circle.center.y = -1.66 - self.circle.center.y;
-            self.scale_velocity(energy);
-        }
-    }
-
-    fn is_colliding(&self) -> bool {
-        self.circle.center.y < -0.83
-    }
 }
 
 pub struct Player {

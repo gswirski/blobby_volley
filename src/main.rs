@@ -1,3 +1,5 @@
+#![feature(collections)]
+#![feature(std_misc)]
 extern crate gl;
 extern crate glutin;
 
