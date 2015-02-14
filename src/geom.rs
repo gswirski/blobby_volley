@@ -98,7 +98,6 @@ impl Circle {
     }
 
     fn bounce_vector(&self, line: &Line) -> Vec2 {
-        // @todo: make it long enough to cover radius as well
         Vec2::between(&closest_point(self, line), &self.center)
     }
 
