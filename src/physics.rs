@@ -30,7 +30,7 @@ fn half_apply_gravity(ball: &mut geom::Circle) {
     ball.velocity.y -= GRAVITY / 2.0;
 }
 
-pub fn apply(ball: &mut geom::Circle) {
+pub fn apply(ball: &mut geom::Circle, particles: Vec<geom::Line>) {
     half_apply_gravity(ball);
 
     ball.center.x += ball.velocity.x;
@@ -38,26 +38,27 @@ pub fn apply(ball: &mut geom::Circle) {
 
     half_apply_gravity(ball);
 
-    let mut particles = vec![
-        geom::Line::new(-1.0, -0.93, 1.0, -0.93),
-        geom::Line::new(-1.0, -1.0, -1.0, 10000.0),
-        geom::Line::new(1.0, -1.0, 1.0, 10000.0),
-        geom::Line::new(-0.01, -1.0, -0.01, -0.25),
-        geom::Line::new(0.01, -1.0, 0.01, -0.25),
-        geom::Line::new(-0.01, -0.25, 0.01, -0.25),
-    ];
+    let mut particles = particles.to_vec();
 
-    particles.sort_by(|a, b|
-                      ball.distance(&a).partial_cmp(
-                          &ball.distance(&b)).unwrap_or(Equal)
-                      );
 
-    for particle in particles {
-        if ball.is_intersecting(&particle) {
-            let energy = energy(&ball);
-            ball.bounce_circle(&particle);
-            scale_velocity(ball, energy);
-            break;
+    let mut changes = true;
+
+    while changes {
+        changes = false;
+
+        particles.sort_by(|a, b|
+                          ball.distance(&a).partial_cmp(
+                              &ball.distance(&b)).unwrap_or(Equal)
+                          );
+
+        for particle in &particles {
+            if ball.is_intersecting(&particle) {
+                let energy = energy(&ball);
+                ball.bounce_circle(&particle);
+                scale_velocity(ball, energy);
+                changes = true;
+                break;
+            }
         }
     }
 }

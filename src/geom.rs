@@ -12,6 +12,7 @@ pub struct Point {
     pub y: f32,
 }
 
+#[derive(Clone)]
 pub struct Line {
     pub start: Point,
     pub end: Point,
@@ -87,6 +88,32 @@ pub fn closest_point(circle: &Circle, line: &Line) -> Point {
 }
 
 impl Circle {
+    pub fn new(x: f32, y: f32, r: f32) -> Circle {
+        Circle {
+            center: Point { x: x, y: y },
+            radius: r,
+            velocity: Vec2 { x: 0.0, y: 0.0 }
+        }
+    }
+
+    pub fn approx(&self) -> Vec<Line> {
+        let x = self.center.x;
+        let y = self.center.y;
+        let r = self.radius;
+        let c = 0.7071; // sin(45) = cos(45) = 1/sqrt(2)
+
+        vec![
+            Line::new(x, y+r, x+r*c, y+r*c),
+            Line::new(x+r*c, y+r*c, x+r, y),
+            Line::new(x+r, y, x+r*c, y-r*c),
+            Line::new(x+r*c, y-r*c, x, y-r),
+            Line::new(x, y-r, x-r*c, y-r*c),
+            Line::new(x-r*c, y-r*c, x-r, y),
+            Line::new(x-r, y, x-r*c, y+r*c),
+            Line::new(x-r*c, y+r*c, x, y+r),
+        ]
+    }
+
     pub fn distance(&self, line: &Line) -> f32 {
         let closest = closest_point(self, line);
 
@@ -114,8 +141,8 @@ impl Circle {
         }
 
         let displacement = bounce_normal.scale(len);
-        self.center.x -= displacement.x;
-        self.center.y -= displacement.y;
+        self.center.x -= 2.0 * displacement.x;
+        self.center.y -= 2.0 * displacement.y;
 
         self.velocity.x -= 2.0 * dot * bounce_normal.x;
         self.velocity.y -= 2.0 * dot * bounce_normal.y;
