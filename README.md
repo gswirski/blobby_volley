@@ -8,19 +8,19 @@ Clone of a blobby volley game written in Rust.
 Building
 --------
 
-*blobby_volley* should compile with rustc **alpha** version.
+*blobby_volley* should compile with
+rustc 1.0.0-nightly (a954663db 2015-02-10 22:08:30 +0000).
 
-Some dependencies are not yet updated for the latest compiler.
-You have to provide a `.cargo/config` file pointing to locally patched libraries.
-
-```
-paths = ["/path/to/rust-core-foundation", "path/to/rust-cocoa", ...]
-```
+To install a specific version of rust compiler use `rustup.sh --date=2015-02-11`.
 
 To do
 -----
 
-Everything.
+- [ ] ball-blobby collisions
+- [ ] single-computer games
+- [ ] adaptive frame-rate
+- [ ] networking
+- [ ] graphics
 
 Authors
 -------
